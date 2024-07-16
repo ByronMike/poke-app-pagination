@@ -1,6 +1,11 @@
-const BASE_URL = "https://pokeapi.co/api/v2/pokemon";
+import { BASE_URL } from "./constants";
+import { Pokemon } from "@/types/fetchPokemon";
 
-export const fetchPokemon = async (page, pageSize, search) => {
+export const fetchPokemon = async (
+  page: number,
+  pageSize: number,
+  search: string
+) => {
   const offset = (page - 1) * pageSize;
   const limit = pageSize;
 
@@ -10,15 +15,13 @@ export const fetchPokemon = async (page, pageSize, search) => {
   const data = await response.json();
   let results = data.results;
 
-  // Apply server-side quick filtering
   if (search) {
-    results = results.filter((pokemon) =>
+    results = results.filter((pokemon: Pokemon) =>
       pokemon.name.includes(search.toLowerCase())
     );
   }
 
-  // Add a unique id to each row
-  const dataWithId = results.map((pokemon, index) => ({
+  const dataWithId = results.map((pokemon: Pokemon, index: number) => ({
     id: offset + index + 1,
     ...pokemon,
   }));
