@@ -1,4 +1,3 @@
-// utils/fetchPokemon.js
 import axios from "axios";
 
 const BASE_URL = "https://pokeapi.co/api/v2/pokemon";
@@ -25,7 +24,7 @@ export const fetchPokemon = async (page, pageSize, search) => {
 
   // Add a unique id to each row
   const dataWithId = results.map((pokemon, index) => ({
-    id: offset + index + 1, // Using the offset and index to create a unique id
+    id: offset + index + 1,
     ...pokemon,
   }));
 

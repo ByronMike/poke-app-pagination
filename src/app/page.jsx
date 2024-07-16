@@ -1,22 +1,24 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { Box, AppBar, Toolbar, Typography, Container } from "@mui/material";
+import { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import { fetchPokemon } from "../utils/fetchPokemon";
+import { fetchPokemon } from "@/utils/fetchPokemon";
 
 const columns = [
   { field: "name", headerName: "Name", width: 200 },
   { field: "url", headerName: "URL", width: 200 },
 ];
 
-function App() {
+export default function Page() {
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 10,
+  });
+
   const [pageState, setPageState] = useState({
     isLoading: false,
     data: [],
-    total: 0,
-    page: 1,
-    pageSize: 10,
+    total: 100,
     search: "",
   });
 
@@ -24,8 +26,8 @@ function App() {
     const fetchData = async () => {
       setPageState((old) => ({ ...old, isLoading: true }));
       const result = await fetchPokemon(
-        pageState.page,
-        pageState.pageSize,
+        paginationModel.page + 1,
+        paginationModel.pageSize,
         pageState.search
       );
       setPageState((old) => ({
@@ -37,57 +39,36 @@ function App() {
     };
 
     fetchData();
-  }, [pageState.page, pageState.pageSize, pageState.search]);
+  }, [paginationModel.page, paginationModel.pageSize, pageState.search]);
 
   const handleSearchChange = (event) => {
-    setPageState((old) => ({ ...old, search: event.target.value, page: 1 })); // Reset to first page on search change
+    setPageState((old) => ({ ...old, search: event.target.value }));
+    setPaginationModel((old) => ({ ...old, page: 0 }));
   };
 
-  const handlePageChange = (newPage) => {
-    console.log("click");
-    setPageState((old) => ({ ...old, page: newPage + 1 }));
-  };
-
-  const handlePageSizeChange = (newPageSize) => {
-    console.log("click");
-
-    setPageState((old) => ({ ...old, pageSize: newPageSize, page: 1 })); // Reset to first page on page size change
+  const handlePageChange = (params) => {
+    setPaginationModel((old) => ({ ...old, page: params.page }));
   };
 
   return (
-    <Box>
-      <AppBar>
-        <Toolbar>
-          <Typography variant="h6" component="div">
-            Server-side Pagination demo
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <Container style={{ marginTop: 100, marginBottom: 100 }}>
-        <input
-          type="text"
-          placeholder="Quick filter"
-          value={pageState.search}
-          onChange={handleSearchChange}
-          style={{ marginBottom: 10 }}
-        />
-        <DataGrid
-          autoHeight
-          rows={pageState.data}
-          rowCount={pageState.total}
-          loading={pageState.isLoading}
-          rowsPerPageOptions={[10, 30, 50, 70, 100]}
-          pagination
-          page={pageState.page - 1}
-          pageSize={pageState.pageSize}
-          paginationMode="server"
-          onPageChange={handlePageChange}
-          onPageSizeChange={handlePageSizeChange}
-          columns={columns}
-        />
-      </Container>
-    </Box>
+    <div style={{ height: 700, width: "100%" }}>
+      <input
+        type="text"
+        placeholder="Search"
+        value={pageState.search}
+        onChange={handleSearchChange}
+        style={{ marginBottom: 16 }}
+      />
+      <DataGrid
+        columns={columns}
+        rows={pageState.data}
+        rowCount={pageState.total}
+        loading={pageState.isLoading}
+        pageSizeOptions={[5]}
+        paginationModel={paginationModel}
+        paginationMode="server"
+        onPaginationModelChange={handlePageChange}
+      />
+    </div>
   );
 }
-
-export default App;
