@@ -1,19 +1,14 @@
-import axios from "axios";
-
 const BASE_URL = "https://pokeapi.co/api/v2/pokemon";
 
 export const fetchPokemon = async (page, pageSize, search) => {
   const offset = (page - 1) * pageSize;
   const limit = pageSize;
 
-  const response = await axios.get(BASE_URL, {
-    params: {
-      offset,
-      limit,
-    },
-  });
+  const URL = `${BASE_URL}?offset=${offset}&limit=${limit}`;
 
-  let results = response.data.results;
+  const response = await fetch(URL);
+  const data = await response.json();
+  let results = data.results;
 
   // Apply server-side quick filtering
   if (search) {
@@ -30,6 +25,6 @@ export const fetchPokemon = async (page, pageSize, search) => {
 
   return {
     data: dataWithId,
-    total: response.data.count,
+    total: data.count,
   };
 };
