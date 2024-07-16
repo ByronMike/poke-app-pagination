@@ -4,10 +4,8 @@ import axios from "axios";
 const BASE_URL = "https://pokeapi.co/api/v2/pokemon";
 
 export const fetchPokemon = async (page, pageSize, search) => {
-  const offset = page * pageSize;
-  console.log(offset);
+  const offset = (page - 1) * pageSize;
   const limit = pageSize;
-  console.log(limit);
 
   const response = await axios.get(BASE_URL, {
     params: {
