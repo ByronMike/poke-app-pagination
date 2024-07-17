@@ -2,7 +2,7 @@
 
 import { useState, useEffect, ChangeEvent } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import { fetchPokemon } from "@/helpers/fetchPokemon";
+import { fetchPokemon } from "@/app/actions/fetchPokemon";
 import { PageState } from "@/types/pageState";
 
 const columns = [

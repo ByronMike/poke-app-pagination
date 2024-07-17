@@ -1,4 +1,5 @@
-import { BASE_URL } from "./constants";
+// app/actions/fetchPokemon.ts
+import { BASE_URL } from "@/helpers/constants";
 import { Pokemon } from "@/types/fetchPokemon";
 
 export const fetchPokemon = async (
